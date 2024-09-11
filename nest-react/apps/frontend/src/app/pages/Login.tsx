@@ -19,7 +19,6 @@ const Login: React.FC = () => {
   } = useForm<IFormInput>();
   const userStore = useUserStore();
   const login = useAuthStore((state) => state.login);
-  const navigate = useNavigate(); // 라우터에서 제공하는 navigate 함수
   const loginMutation = useLogin();
   // onSubmit 함수
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -38,7 +37,6 @@ const Login: React.FC = () => {
       // userStore.updateUser({ id, username, role, email });
       // login();
       loginMutation.mutate({ username: data.id, password: data.password });
-      navigate({ to: '/' });
       // 업데이트된 상태를 확인
       console.log(userStore); // 현재 상태 확인
     } catch (error) {
