@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const About: React.FC = () => {
+export const User: React.FC = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold">About Page</h2>

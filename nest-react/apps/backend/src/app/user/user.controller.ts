@@ -20,9 +20,11 @@ export class UserController {
     // 이미 해당 이메일로 가입된 유저가 있는지 확인
     const existingUser = await this.userService.findByUsername(username);
     if (existingUser) {
-      throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        '동일한 사용자가 존재합니다.',
+        HttpStatus.BAD_REQUEST
+      );
     }
-
     // 새 유저 생성
     return this.userService.create(createUserDto);
   }

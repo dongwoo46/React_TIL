@@ -10,9 +10,14 @@ export const Sidebar: React.FC = () => {
             Home
           </Link>
         </li>
-        <li>
-          <Link to="/about" className="text-blue-500 hover:underline">
-            About
+        <li className="mb-2">
+          <Link to="/user" className="text-blue-500 hover:underline">
+            User
+          </Link>
+        </li>
+        <li className="mb-2">
+          <Link to="/article" className="text-blue-500 hover:underline">
+            Article
           </Link>
         </li>
       </ul>

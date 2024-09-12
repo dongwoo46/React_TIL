@@ -8,13 +8,14 @@ import {
   useNavigate,
 } from '@tanstack/react-router';
 import { Header, Sidebar } from '../widgets';
-import { About } from './About';
 import { Home } from './Home';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import Login from './Login';
 import Signup from './Signup';
 import useAuthStore from '../shared/store/auth-store';
 import { useEffect } from 'react';
+import { Article } from './Article';
+import { User } from './User';
 
 // Root 라우트 생성
 const rootRoute = createRootRoute();
@@ -55,10 +56,10 @@ const homeRoute = createRoute({
   component: Home,
 });
 
-const aboutRoute = createRoute({
+const userRoute = createRoute({
   getParentRoute: () => mainRoute,
-  path: '/about', // About 페이지는 '/about' 경로
-  component: About,
+  path: '/user', // About 페이지는 '/about' 경로
+  component: User,
 });
 
 // Login 경로 (Header와 Sidebar 없는 라우트로 rootRoute의 자식)
@@ -74,6 +75,12 @@ const signupRoute = createRoute({
   component: Signup,
 });
 
+const ArticleRoute = createRoute({
+  getParentRoute: () => mainRoute, //
+  path: '/article',
+  component: Article,
+});
+
 // 404 Not Found Route (라우트가 없을 때 보여줄 페이지)
 const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,
@@ -82,7 +89,7 @@ const notFoundRoute = new NotFoundRoute({
 
 // 라우트 트리 구성
 const routeTree = rootRoute.addChildren([
-  mainRoute.addChildren([homeRoute, aboutRoute]), // mainRoute의 자식으로 Home과 About 추가
+  mainRoute.addChildren([homeRoute, userRoute, ArticleRoute]), // mainRoute의 자식으로 Home과 About 추가
   loginRoute, // loginRoute는 rootRoute의 자식
   signupRoute,
   notFoundRoute, // NotFoundRoute 추가

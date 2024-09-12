@@ -31,6 +31,8 @@ export class UserService {
       password: hashedPassword,
     });
 
+    console.log(newUser);
+
     return this.userRepository.save(newUser);
   }
 

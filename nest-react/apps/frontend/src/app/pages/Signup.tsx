@@ -18,17 +18,24 @@ const Signup: React.FC = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
-      // 서버에 POST 요청을 보내는 axios 호출
-      const response = await axios.post('http://localhost:3001/api/user', {
-        username: data.id,
-        password: data.password,
-      });
+      const response = await axios.post(
+        'http://localhost:3000/api/users/signup',
+        {
+          username: data.id,
+          password: data.password,
+          role: 'SuperAdmin',
+          email: 'sniper442@example.com',
+        }
+      );
       console.log('Signup successful:', response.data);
     } catch (error) {
-      console.error('Signup failed:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Signup failed:', error.response.data);
+      } else {
+        console.error('Signup failed:', error);
+      }
     }
   };
-
   // 패스워드 확인 필드와 패스워드 필드가 동일한지 검사하는 유효성 검사 함수
   const validatePasswordConfirmation = (value: string) => {
     return value === watch('password') || 'Passwords do not match';
