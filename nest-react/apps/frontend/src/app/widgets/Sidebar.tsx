@@ -20,6 +20,14 @@ export const Sidebar: React.FC = () => {
             Article
           </Link>
         </li>
+        <li className="mb-2">
+          <Link
+            to="/tanstack-article"
+            className="text-blue-500 hover:underline"
+          >
+            TanstackArticle
+          </Link>
+        </li>
       </ul>
     </nav>
   );

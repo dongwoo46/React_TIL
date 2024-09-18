@@ -12,7 +12,7 @@ import { CursorPageMetaDto } from './dto/cursor/cursor-page.meta.dto';
 export class ArticlesService {
   constructor(
     @InjectRepository(Article)
-    private readonly articleRepository: Repository<Article>,
+    private readonly articleRepository: Repository<Article>
   ) {}
 
   create(createArticleDto: CreateArticleDto) {
@@ -25,7 +25,7 @@ export class ArticlesService {
 
   // cursor paginatnion
   async cursorBasedPaginated(
-    cursorPageOptionsDto: CursorPageOptionsDto,
+    cursorPageOptionsDto: CursorPageOptionsDto
   ): Promise<CursorPageDto<Article>> {
     console.log(cursorPageOptionsDto);
     const [articles, total] = await this.articleRepository.findAndCount({
@@ -103,6 +103,26 @@ export class ArticlesService {
     return articles;
   }
 
+  async allSearch(data: string, page: number, take: number): Promise<any> {
+    const [articles, totalItems] = await this.articleRepository
+      .createQueryBuilder('article')
+      .where(
+        'article.title LIKE :search OR article.context LIKE :search OR article.name LIKE :search',
+        { search: `%${data}%` }
+      )
+      .skip((page - 1) * take) // 페이지네이션을 위한 skip
+      .take(take) // 페이지네이션을 위한 take
+      .getManyAndCount(); // 필터링된 데이터와 전체 항목 수를 가져옴
+
+    // 전체 페이지 수 계산 (totalItems가 0일 때는 totalPages를 0으로 설정)
+    const totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / take);
+
+    return {
+      articles,
+      totalPages, // 총 페이지 수 반환
+    };
+  }
+
   async createCustomCursor(cursorIndex: number): Promise<string> {
     const products = await this.articleRepository.find();
 
@@ -121,8 +141,8 @@ export class ArticlesService {
     return this.articleRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  async findOne(id: number) {
+    return await this.articleRepository.findOneBy({ id });
   }
 
   update(id: number, updateArticleDto: UpdateArticleDto) {

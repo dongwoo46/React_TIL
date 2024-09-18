@@ -16,6 +16,7 @@ import useAuthStore from '../shared/store/auth-store';
 import { useEffect } from 'react';
 import { Article } from './Article';
 import { User } from './User';
+import { TanstackArticle } from './TanstackArticle';
 
 // Root 라우트 생성
 const rootRoute = createRootRoute();
@@ -81,6 +82,12 @@ const ArticleRoute = createRoute({
   component: Article,
 });
 
+const TanstackArticleRoute = createRoute({
+  getParentRoute: () => mainRoute, //
+  path: '/tanstack-article',
+  component: TanstackArticle,
+});
+
 // 404 Not Found Route (라우트가 없을 때 보여줄 페이지)
 const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,
@@ -89,7 +96,12 @@ const notFoundRoute = new NotFoundRoute({
 
 // 라우트 트리 구성
 const routeTree = rootRoute.addChildren([
-  mainRoute.addChildren([homeRoute, userRoute, ArticleRoute]), // mainRoute의 자식으로 Home과 About 추가
+  mainRoute.addChildren([
+    homeRoute,
+    userRoute,
+    ArticleRoute,
+    TanstackArticleRoute,
+  ]), // mainRoute의 자식으로 Home과 About 추가
   loginRoute, // loginRoute는 rootRoute의 자식
   signupRoute,
   notFoundRoute, // NotFoundRoute 추가

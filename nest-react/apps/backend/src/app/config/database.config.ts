@@ -15,7 +15,7 @@ export const databaseConfig = async (
     database: configService.get<string>('DATABASE_DATABASE', 'new'),
     entities: [User, Article],
     synchronize: configService.get<boolean>('DATABASE_SYNCHRONIZE', false),
-    logging: false,
+    logging: ['query'],
     dropSchema: false,
   };
 };

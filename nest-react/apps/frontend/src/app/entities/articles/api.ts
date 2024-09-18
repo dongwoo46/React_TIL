@@ -1,38 +1,54 @@
 import axios from 'axios';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import useUserStore from '../../shared/store/user-store'; // Zustand를 사용한 유저 상태 관리
-import useAuthStore from '../../shared/store/auth-store'; // Zustand를 사용한 로그인 상태 관리
-import { useNavigate } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
 import { Article } from './../../../../../backend/src/app/articles/entities/article.entity';
 
-// SearchArticles 타입 정의 (필요한 경우 수정)
-interface SearchArticles {
-  title?: string;
-  context?: string;
-}
-
 // searchArticles API 호출 함수
-const searchArticles = async (data: SearchArticles): Promise<Article[]> => {
+const searchArticles = async (
+  data: string,
+  page: number = 1,
+  take: number = 10
+): Promise<{ articles: Article[]; totalPages: number }> => {
   const response = await axios.get(
     'http://localhost:3000/api/articles/search',
     {
       params: {
-        ...(data.title && { title: data.title }),
-        ...(data.context && { context: data.context }),
+        data,
+        page,
+        take,
       },
     }
   );
-  return response.data; // 응답 데이터 반환 (user 대신 data 전체를 반환)
+  return response.data; // `articles`와 `totalPages`가 포함된 응답
 };
 
 // useArticle Hook
-export const useArticle = (data: SearchArticles) => {
-  // useQuery를 사용해 검색 결과를 가져옴
-  return useQuery({
-    queryKey: ['searchArticles'],
+export const useArticle = (
+  data: string,
+  page: number = 1,
+  take: number = 10
+) => {
+  return useQuery<{ articles: Article[]; totalPages: number }, Error>({
+    queryKey: ['searchArticles', data, page, take], // 페이지와 데이터 검색어 포함
     queryFn: async () => {
-      const articles = await searchArticles(data);
-      return articles;
+      const { articles, totalPages } = await searchArticles(data, page, take);
+      return { articles, totalPages };
     },
+  });
+};
+
+// searchArticles API 호출 함수
+const getArticleDetails = async (id: number): Promise<Article> => {
+  const response = await axios.get(`http://localhost:3000/api/articles/${id}`);
+  return response.data; // `articles`와 `totalPages`가 포함된 응답
+};
+
+// useArticle Hook
+// useArticleId Hook
+export const useArticleId = (id: number | null) => {
+  return useQuery<Article, Error>({
+    queryKey: ['article-id', id],
+    queryFn: () =>
+      id ? getArticleDetails(id) : Promise.reject('No ID provided'), // id가 null일 때 비활성화 옵션을 사용하므로 queryFn은 항상 실행 가능
+    enabled: !!id, // id가 있을 때만 쿼리 실행
   });
 };

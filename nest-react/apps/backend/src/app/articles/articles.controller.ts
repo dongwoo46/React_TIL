@@ -38,7 +38,7 @@ export class ArticlesController {
 
   @Get('cursorPaginate')
   async cursorPaginate(
-    @Query() { take = 5, sort, cursorId }: CursorPageOptionsDto,
+    @Query() { take = 5, sort, cursorId }: CursorPageOptionsDto
   ): Promise<CursorPageDto<Article>> {
     return await this.articlesService.cursorBasedPaginated({
       take,
@@ -50,7 +50,7 @@ export class ArticlesController {
   @Get('/pagination')
   async paginate(
     @Query('page') page: number = 1,
-    @Query('take') take: number = 10,
+    @Query('take') take: number = 10
   ): Promise<{
     data: Article[];
     meta: { total: number; page: number; last_page: number };
@@ -62,8 +62,17 @@ export class ArticlesController {
 
   @Get('/search')
   async search(
+    @Query('data') data: string = '',
+    @Query('page') page: number = 1,
+    @Query('take') take: number = 10
+  ): Promise<Article[]> {
+    return await this.articlesService.allSearch(data, page, take);
+  }
+
+  @Get('/search2')
+  async search2(
     @Query('title') title: string = '',
-    @Query('context') context: string = '',
+    @Query('context') context: string = ''
   ): Promise<Article[]> {
     Logger.log(title);
     return await this.articlesService.nameSearch(title, context);
